@@ -64,12 +64,13 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
     /* ---------- OVERRIDES ---------- */
 
     function deposit(uint256 amount)
-        external
-        override
-        whenNotPaused
-    {
-        super.deposit(amount);
-    }
+    public
+    override
+    whenNotPaused
+{
+    super.deposit(amount);
+}
+
 
     function getImplementationVersion()
         external

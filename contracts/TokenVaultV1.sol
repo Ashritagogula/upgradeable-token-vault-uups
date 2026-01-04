@@ -40,17 +40,18 @@ contract TokenVaultV1 is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         _grantRole(UPGRADER_ROLE, _admin);
     }
 
-    function deposit(uint256 amount) external virtual {
-        require(amount > 0, "Amount zero");
+    function deposit(uint256 amount) public virtual {
+    require(amount > 0, "Amount zero");
 
-        uint256 fee = (amount * depositFee) / 10000;
-        uint256 credited = amount - fee;
+    uint256 fee = (amount * depositFee) / 10000;
+    uint256 credited = amount - fee;
 
-        token.transferFrom(msg.sender, address(this), amount);
+    token.transferFrom(msg.sender, address(this), amount);
 
-        balances[msg.sender] += credited;
-        _totalDeposits += credited;
-    }
+    balances[msg.sender] += credited;
+    _totalDeposits += credited;
+}
+
 
     function withdraw(uint256 amount) external {
         require(amount > 0, "Amount zero");
