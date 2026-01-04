@@ -1,0 +1,38 @@
+name: Build Production-Grade Upgradeable Smart Contract System with UUPS Proxy Pattern
+
+domain:
+  - Backend Development
+  - Blockchain
+
+difficulty: Hard
+
+tools:
+  - Hardhat
+  - Solidity
+  - JavaScript
+  - Ethers.js
+  - Chai
+  - OpenZeppelin Contracts Upgradeable
+
+features:
+  - UUPS Upgradeable Proxy Pattern
+  - Secure Initializers and Reinitializers
+  - Role-Based Access Control
+  - Storage Layout Management with Gaps
+  - State Preservation Across Upgrades
+  - Yield Generation Logic
+  - Withdrawal Delay and Emergency Withdrawals
+  - Comprehensive Security and Upgrade Testing
+
+contracts:
+  - TokenVaultV1
+  - TokenVaultV2
+  - TokenVaultV3
+
+tests:
+  - TokenVaultV1.test.js
+  - upgrade-v1-to-v2.test.js
+  - upgrade-v2-to-v3.test.js
+  - security.test.js
+
+status: Completed
