@@ -58,10 +58,13 @@ describe("Security Tests", function () {
   });
 
   it("should prevent function selector clashing", async function () {
-    const iface = vault.interface;
-    const selectors = Object.keys(iface.fragments)
-      .filter((f) => iface.fragments[f].type === "function")
-      .map((f) => iface.getFunction(f).selector);
+    const fragments = vault.interface.fragments.filter(
+      (f) => f.type === "function"
+    );
+
+    const selectors = fragments.map((f) =>
+      vault.interface.getFunction(f.name).selector
+    );
 
     const uniqueSelectors = new Set(selectors);
     expect(uniqueSelectors.size).to.equal(selectors.length);

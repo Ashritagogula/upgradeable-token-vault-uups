@@ -9,7 +9,6 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
 
     uint256 internal yieldRate;
     mapping(address => uint256) internal lastYieldClaim;
-    mapping(address => uint256) internal pendingYield;
 
     uint256[42] private __gapV2;
 
@@ -17,6 +16,7 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
         __Pausable_init();
         yieldRate = _yieldRate;
 
+        // Optional: grant PAUSER_ROLE if initializeV2 is called
         _grantRole(PAUSER_ROLE, msg.sender);
     }
 
@@ -49,11 +49,23 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
         return _calculateYield(user);
     }
 
-    function pauseDeposits() external onlyRole(PAUSER_ROLE) {
+    /* ---------- PAUSE CONTROL ---------- */
+
+    function pauseDeposits() external {
+        require(
+            hasRole(PAUSER_ROLE, msg.sender) ||
+                hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Not authorized to pause"
+        );
         _pause();
     }
 
-    function unpauseDeposits() external onlyRole(PAUSER_ROLE) {
+    function unpauseDeposits() external {
+        require(
+            hasRole(PAUSER_ROLE, msg.sender) ||
+                hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Not authorized to unpause"
+        );
         _unpause();
     }
 
@@ -64,13 +76,16 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
     /* ---------- OVERRIDES ---------- */
 
     function deposit(uint256 amount)
-    public
-    override
-    whenNotPaused
-{
-    super.deposit(amount);
-}
+        public
+        override
+        whenNotPaused
+    {
+        super.deposit(amount);
 
+        if (lastYieldClaim[msg.sender] == 0) {
+            lastYieldClaim[msg.sender] = block.timestamp;
+        }
+    }
 
     function getImplementationVersion()
         external
@@ -86,7 +101,10 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
 
     function _calculateYield(address user) internal view returns (uint256) {
         uint256 lastClaim = lastYieldClaim[user];
-        if (lastClaim == 0) return 0;
+
+        if (lastClaim == 0) {
+            lastClaim = block.timestamp - 1;
+        }
 
         uint256 timeElapsed = block.timestamp - lastClaim;
         return (balances[user] * yieldRate * timeElapsed)
