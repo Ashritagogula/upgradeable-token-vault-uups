@@ -1,0 +1,17 @@
+{
+  "name": "upgradeable-token-vault-uups",
+  "version": "1.0.0",
+  "description": "Production-grade upgradeable smart contract system using UUPS proxy pattern",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "coverage": "npx hardhat coverage"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.0",
+    "@openzeppelin/hardhat-upgrades": "^3.0.0",
+    "hardhat": "^2.22.0"
+  }
+}
