@@ -103,3 +103,58 @@ Upgrade to V3
 
 These scripts use OpenZeppelin’s Hardhat Upgrades plugin and reflect real-world deployment workflows.
 ```
+
+## Installation & Setup
+```bash
+npm install
+```
+# Compile Contracts
+```bash
+npx hardhat compile
+```
+
+# Run Tests
+```bash
+npx hardhat test
+```
+# Deploy & Upgrade Workflow
+## Deploy V1
+```bash
+npx hardhat run scripts/deploy-v1.js
+```
+## Upgrade to V2
+```bash
+npx hardhat run scripts/upgrade-to-v2.js
+```
+## Upgrade to V3
+```bash
+npx hardhat run scripts/upgrade-to-v3.js
+```
+# Storage Layout Strategy
+- Storage variables are never reordered or removed
+
+- New variables are only appended
+
+- Storage gaps are reduced in each upgrade
+
+- OpenZeppelin upgrade validation ensures safety
+
+- This prevents storage collisions and ensures safe upgrades.
+
+# Access Control Design
+- DEFAULT_ADMIN_ROLE → configuration & role management
+
+- UPGRADER_ROLE → contract upgrades
+
+- PAUSER_ROLE → pause/unpause deposits (V2+)
+
+- Separation of roles minimizes blast radius in case of key compromise.
+
+# Known Limitations & Design Decisions
+- Yield does not auto-compound (explicit claim required)
+
+- Emergency withdrawal bypasses delay by design
+
+- Timelock/multisig not included (out of scope for task)
+
+- Gas optimization balanced with security and clarity
