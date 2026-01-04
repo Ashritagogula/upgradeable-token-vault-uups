@@ -2,7 +2,8 @@
 pragma solidity ^0.8.20;
 
 import "./TokenVaultV1.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+
 
 contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
