@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.23;
 
 import "./TokenVaultV1.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 
-
 contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
-    uint256 internal yieldRate; // basis points (e.g. 500 = 5%)
+    uint256 internal yieldRate;
     mapping(address => uint256) internal lastYieldClaim;
     mapping(address => uint256) internal pendingYield;
 
@@ -21,9 +20,12 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
         _grantRole(PAUSER_ROLE, msg.sender);
     }
 
-    /* -------------------- V2 FUNCTIONS -------------------- */
+    /* ---------- V2 FUNCTIONS ---------- */
 
-    function setYieldRate(uint256 _yieldRate) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setYieldRate(uint256 _yieldRate)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         yieldRate = _yieldRate;
     }
 
@@ -36,7 +38,6 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
         require(yieldAmount > 0, "No yield");
 
         lastYieldClaim[msg.sender] = block.timestamp;
-        pendingYield[msg.sender] = 0;
 
         balances[msg.sender] += yieldAmount;
         _totalDeposits += yieldAmount;
@@ -60,23 +61,34 @@ contract TokenVaultV2 is TokenVaultV1, PausableUpgradeable {
         return paused();
     }
 
-    /* -------------------- OVERRIDES -------------------- */
+    /* ---------- OVERRIDES ---------- */
 
-    function deposit(uint256 amount) external override whenNotPaused {
+    function deposit(uint256 amount)
+        external
+        override
+        whenNotPaused
+    {
         super.deposit(amount);
     }
 
-    function getImplementationVersion() external pure override returns (string memory) {
+    function getImplementationVersion()
+        external
+        pure
+        virtual
+        override
+        returns (string memory)
+    {
         return "V2";
     }
 
-    /* -------------------- INTERNAL -------------------- */
+    /* ---------- INTERNAL ---------- */
 
     function _calculateYield(address user) internal view returns (uint256) {
         uint256 lastClaim = lastYieldClaim[user];
         if (lastClaim == 0) return 0;
 
         uint256 timeElapsed = block.timestamp - lastClaim;
-        return (balances[user] * yieldRate * timeElapsed) / (365 days * 10000);
+        return (balances[user] * yieldRate * timeElapsed)
+            / (365 days * 10000);
     }
 }

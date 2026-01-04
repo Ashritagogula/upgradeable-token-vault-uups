@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.23;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
@@ -13,7 +13,7 @@ contract TokenVaultV1 is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
 
     mapping(address => uint256) internal balances;
     uint256 internal _totalDeposits;
-    uint256 internal depositFee; // basis points (e.g. 500 = 5%)
+    uint256 internal depositFee;
 
     uint256[45] private __gap;
 
@@ -40,7 +40,7 @@ contract TokenVaultV1 is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         _grantRole(UPGRADER_ROLE, _admin);
     }
 
-    function deposit(uint256 amount) external {
+    function deposit(uint256 amount) external virtual {
         require(amount > 0, "Amount zero");
 
         uint256 fee = (amount * depositFee) / 10000;
@@ -74,7 +74,12 @@ contract TokenVaultV1 is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         return depositFee;
     }
 
-    function getImplementationVersion() external pure returns (string memory) {
+    function getImplementationVersion()
+        external
+        pure
+        virtual
+        returns (string memory)
+    {
         return "V1";
     }
 
